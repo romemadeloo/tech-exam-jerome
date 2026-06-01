@@ -130,16 +130,15 @@ It does the following:
 - Executes the Playwright suite
 - Uploads Playwright and Allure artifacts
 - Builds Allure with historical trends
-- Publishes the report to the `gh-pages` branch
+- Publishes the report through GitHub Pages deployment
 
 To enable GitHub Pages history:
 
 1. Push the repository to GitHub.
-2. In repository settings, enable Actions workflow read/write permission if your organization restricts it.
-3. Run the workflow once on `main` or `master`.
-4. Go to `Settings > Pages`.
-5. Set source to `Deploy from a branch`.
-6. Select branch `gh-pages` and folder `/root`.
+2. Go to `Settings > Pages`.
+3. Set source to `GitHub Actions`.
+4. In repository settings, allow workflow permissions for GitHub Pages deployment if your organization restricts them.
+5. Run the workflow once on `main` or `master`.
 
 The latest Allure report will be available from the repository's GitHub Pages URL after the Pages deployment completes.
 
@@ -159,4 +158,4 @@ The latest Allure report will be available from the repository's GitHub Pages UR
 - If the app is unavailable, rerun after confirming `http://35.78.90.242:8080/exam/login` is reachable.
 - If browser launch fails, run `npx playwright install chromium` again.
 - If Allure local commands fail, confirm Java is installed and available in `PATH`.
-- If GitHub Pages does not publish, confirm the workflow has `contents: write` permission and that Pages is configured to use the `gh-pages` branch.
+- If GitHub Pages does not publish, confirm Pages is configured to use `GitHub Actions` and the deploy job has `pages: write` and `id-token: write` permissions.
