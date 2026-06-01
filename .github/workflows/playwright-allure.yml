@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: playwright-allure-${{ github.ref }}
@@ -23,6 +23,8 @@ jobs:
     name: Run Playwright tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
 
     env:
       BASE_URL: http://35.78.90.242:8080/exam
@@ -45,6 +47,9 @@ jobs:
 
       - name: Install Chromium browser
         run: npx playwright install --with-deps chromium
+
+      - name: Prepare report directories
+        run: mkdir -p allure-results test-results
 
       - name: Type-check test code
         run: npm run typecheck
@@ -72,8 +77,23 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
+  publish-allure:
+    name: Publish Allure report
+    needs: e2e
+    if: always() && needs.e2e.result != 'cancelled' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Allure raw results
+        uses: actions/download-artifact@v8
+        with:
+          name: allure-results
+          path: allure-results
+
       - name: Checkout existing Allure history
-        if: always() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         uses: actions/checkout@v6
         continue-on-error: true
         with:
@@ -81,11 +101,9 @@ jobs:
           path: gh-pages
 
       - name: Ensure Allure history folder exists
-        if: always() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         run: mkdir -p gh-pages
 
       - name: Build Allure report with history
-        if: always() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         uses: simple-elf/allure-report-action@v1.13
         with:
           allure_results: allure-results
@@ -96,7 +114,6 @@ jobs:
           report_name: ISR Exam Playwright Automation
 
       - name: Publish Allure report to GitHub Pages
-        if: always() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
