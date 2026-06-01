@@ -84,7 +84,7 @@ npm run test:demo-failure
 
 Runs one intentional failure that is excluded by default. Use this during the demo recording to show screenshots, traces, videos, and Allure failure details.
 
-In GitHub Actions, keep normal pushes on the default passing suite. To run the intentional failure demo in CI, open `Actions > Playwright E2E with Allure > Run workflow`, enable `run_demo_failure`, and start the workflow manually.
+In GitHub Actions, keep normal pushes on the default passing suite. For targeted CI runs, open `Actions > Playwright E2E with Allure > Run workflow`, choose a `test_suite`, and start the workflow manually.
 
 ```bash
 npm run typecheck
@@ -144,18 +144,28 @@ To enable GitHub Pages history:
 
 The latest Allure report will be available from the repository's GitHub Pages URL after the Pages deployment completes.
 
-### Manual Failure Demo in GitHub Actions
+### Targeted Runs in GitHub Actions
 
-The intentional failure demo is not run on push or pull request. To run it in GitHub:
+Push and pull request events run the full suite by default. To run a targeted suite in GitHub:
 
 1. Open the repository on GitHub.
 2. Go to `Actions`.
 3. Select `Playwright E2E with Allure`.
 4. Click `Run workflow`.
-5. Enable `run_demo_failure`.
+5. Choose one `test_suite`: `full`, `smoke`, `auth`, `known-bugs`, or `demo-failure`.
 6. Run the workflow from `main`.
 
-This workflow is expected to show the Playwright test job as failed because the demo test fails intentionally. The Allure publish job still runs afterward and updates GitHub Pages with the failure evidence.
+The targeted choices map to these local commands:
+
+| GitHub input | Local command |
+|---|---|
+| `full` | `npm run test:ci` |
+| `smoke` | `npm run test:smoke` |
+| `auth` | `npm run test:auth` |
+| `known-bugs` | `npm run test:known-bugs` |
+| `demo-failure` | `npm run test:demo-failure` |
+
+The `demo-failure` workflow is expected to show the Playwright test job as failed because the demo test fails intentionally. The Allure publish job still runs afterward and updates GitHub Pages with the failure evidence.
 
 ## Demo Recording Checklist
 
@@ -164,7 +174,7 @@ This workflow is expected to show the Playwright test job as failed because the 
 - Show the Playwright HTML report.
 - Generate/open the Allure report.
 - Run `npm run test:demo-failure`.
-- Optionally run the GitHub Actions manual workflow with `run_demo_failure` enabled.
+- Optionally run the GitHub Actions manual workflow with `test_suite=demo-failure`.
 - Show the failure screenshot, trace, video, and Allure failure details.
 - Show the GitHub Actions workflow and published Allure history page.
 - Walk through at least one known bug in `docs/BUG_REPORTS.md`.

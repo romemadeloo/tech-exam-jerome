@@ -11,11 +11,17 @@ on:
       - master
   workflow_dispatch:
     inputs:
-      run_demo_failure:
-        description: Run the intentional failure demo instead of the default suite
+      test_suite:
+        description: Playwright suite to run
         required: false
-        default: false
-        type: boolean
+        default: full
+        type: choice
+        options:
+          - full
+          - smoke
+          - auth
+          - known-bugs
+          - demo-failure
 
 permissions:
   contents: read
@@ -37,6 +43,7 @@ jobs:
       EXAM_USERNAME: sakamoto
       EXAM_PASSWORD: 1234passWord
       CI: true
+      TEST_SUITE: ${{ inputs.test_suite || 'full' }}
 
     steps:
       - name: Checkout repository
@@ -60,13 +67,31 @@ jobs:
       - name: Type-check test code
         run: npm run typecheck
 
-      - name: Run Playwright suite
-        if: ${{ !inputs.run_demo_failure }}
-        run: npm run test:ci
-
-      - name: Run intentional failure demo
-        if: ${{ inputs.run_demo_failure }}
-        run: npm run test:demo-failure
+      - name: Run selected Playwright suite
+        shell: bash
+        run: |
+          echo "Selected suite: ${TEST_SUITE}"
+          case "${TEST_SUITE}" in
+            full)
+              npm run test:ci
+              ;;
+            smoke)
+              npm run test:smoke
+              ;;
+            auth)
+              npm run test:auth
+              ;;
+            known-bugs)
+              npm run test:known-bugs
+              ;;
+            demo-failure)
+              npm run test:demo-failure
+              ;;
+            *)
+              echo "Unknown test suite: ${TEST_SUITE}"
+              exit 1
+              ;;
+          esac
 
       - name: Upload Playwright artifacts
         if: always()
