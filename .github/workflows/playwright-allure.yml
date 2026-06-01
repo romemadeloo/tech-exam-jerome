@@ -10,6 +10,12 @@ on:
       - main
       - master
   workflow_dispatch:
+    inputs:
+      run_demo_failure:
+        description: Run the intentional failure demo instead of the default suite
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -55,7 +61,12 @@ jobs:
         run: npm run typecheck
 
       - name: Run Playwright suite
+        if: ${{ !inputs.run_demo_failure }}
         run: npm run test:ci
+
+      - name: Run intentional failure demo
+        if: ${{ inputs.run_demo_failure }}
+        run: npm run test:demo-failure
 
       - name: Upload Playwright artifacts
         if: always()
