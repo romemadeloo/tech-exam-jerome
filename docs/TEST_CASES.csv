@@ -1,0 +1,13 @@
+ID,Area,Scenario,Expected Result,Automated Test
+TC-AUTH-001,Authentication,Valid user can log in,Login completion page is displayed,tests/auth/login.spec.ts
+TC-VAL-001,Validation,Unknown user ID is rejected,Warning for missing login ID is displayed,tests/auth/login-validation.spec.ts
+TC-VAL-002,Validation,Wrong password is rejected,Password mismatch warning is displayed,tests/auth/login-validation.spec.ts
+TC-VAL-003,Validation,Blank password is rejected,Password-required warning is displayed,tests/auth/login-validation.spec.ts
+TC-VAL-004,Validation,Blank credentials are rejected,User remains unauthenticated,tests/auth/login-validation.spec.ts
+TC-NAV-001,Navigation/Login UI,Login page renders expected controls,Expected controls are visible,tests/navigation/login-navigation.spec.ts
+TC-NAV-002,Navigation,Back link returns to login,Login page is displayed with blank fields,tests/navigation/login-navigation.spec.ts
+TC-NAV-003,Form behavior,Login form uses POST and autocomplete off,Form attributes match expected behavior,tests/navigation/login-navigation.spec.ts
+BUG-001,Error handling,Empty user ID with password should not crash,No HTTP 500 or stack trace,tests/known-bugs/known-bugs.spec.ts
+BUG-002,Accessibility,Password label should target password input,Input has matching id password,tests/known-bugs/known-bugs.spec.ts
+BUG-003,Accessibility/UX,Keyboard tab order should be logical,Focus moves from user ID to password,tests/known-bugs/known-bugs.spec.ts
+DEMO-FAIL-001,Reporting,Intentional failure for demo,Report captures failure evidence,tests/demo/failure-demo.spec.ts
