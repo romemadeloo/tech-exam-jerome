@@ -154,6 +154,8 @@ The latest Allure report will be available from the repository's GitHub Pages UR
 - Show the GitHub Actions workflow and published Allure history page.
 - Walk through at least one known bug in `docs/BUG_REPORTS.md`.
 
+See `docs/SUBMISSION_GUIDE.md` for the recommended final submission and recording flow.
+
 ## Troubleshooting
 
 - If the app is unavailable, rerun after confirming `http://35.78.90.242:8080/exam/login` is reachable.
